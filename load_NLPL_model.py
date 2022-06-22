@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
+import tqdm
 
-with open("./word_vec_rep/model.txt", "r") as file:
+with open("./word_vec_rep/model.txt", "r", encoding='utf8') as file:
     # Read the first line to get the dimensions of the vocabulary and word vector
     first_line = file.readline()
     dims = first_line.replace('\n', '').split(' ')
