@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import tqdm
 
-with open("./word_vec_rep/model.txt", "r", encoding='utf8') as file:
+with open("./0/model.txt", "r", encoding='utf8') as file:
     # Read the first line to get the dimensions of the vocabulary and word vector
     first_line = file.readline()
     dims = first_line.replace('\n', '').split(' ')
@@ -16,5 +16,5 @@ with open("./word_vec_rep/model.txt", "r", encoding='utf8') as file:
         words_name_type[idx, :] = line_list[0].split('_')
         # input("Press to continue")
 
-# model = gensim.models.fasttext.load_facebook_model("./word_vec_rep/model.bin")
+# model = gensim.models.fasttext.load_facebook_model("./0/model.bin")
 # pass
