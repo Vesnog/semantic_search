@@ -43,8 +43,30 @@ def load_text_file(text_file_path):
         no_punc = all_text.translate(str.maketrans('', '', string.punctuation))
         # Get rid of the new lines and trim both ends by removing leading and trailing white space
         bare_text = no_punc.replace('\n', ' ').strip()
-        words = bare_text.split(' ')
+        words = bare_text.lower().split(' ')
     return words
+
+
+def vectorize_text(list_of_text_files):
+    # Initialize and empty list for the vector representation of
+    vector_rep_files = []
+    for text_file in list_of_text_files:
+        words = load_text_file(os.path.join(text_files_folder, text_file))
+        # Put the words into a vector
+        aux_list = []
+        # This for loop runs once for each text file
+        for word in words:
+            idxs_array = np.where(words_name_type[:, 0] == word)
+            idxs = idxs_array[0]
+            if len(idxs) != 0:
+                # First occurrence is taken for now
+                aux_list.append(words_rep_vec[idxs[0]])
+        # print(text_file)
+        vector_rep_files.append(np.array(aux_list))
+        max_dim = max([text_array.shape[0] for text_array in vector_rep_files])
+        dim_equal = [np.pad(vec, ((0, max_dim - vec.shape[0]), (0, 0)), mode='constant') for vec in vector_rep_files]
+        vector_rep_array = np.array(dim_equal)
+    return vector_rep_array
 
 
 # Hyper-parameters for the code to work properly
@@ -53,9 +75,6 @@ text_files_folder = './example_texts'  # folder containing the text files
 
 words_rep_vec, words_name_type = load_model(model_location)
 list_of_text_files = os.listdir(text_files_folder)
-for text_file in list_of_text_files:
-    words = load_text_file(os.path.join(text_files_folder, text_file))
-
+text_arrays_from_files = vectorize_text(list_of_text_files)
 pass
-
 
