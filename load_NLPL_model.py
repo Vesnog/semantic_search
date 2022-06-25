@@ -101,8 +101,16 @@ text_files_folder = './example_texts'  # folder containing the text files
 search_keywords = ['banana']
 
 words_rep_vec, words_name_type = load_model(model_location)
-list_of_text_files = os.listdir(text_files_folder)
+list_of_text_files = np.array(os.listdir(text_files_folder))
 text_arrays_from_files = vectorize_text(list_of_text_files)
 search_array = vectorize_search(search_keywords)
+# Inner product to provide a metric for the presence of the search term
+# Shape (#search keywords, # docs, max # of words in document)
+inner_prod = np.inner(search_array, text_arrays_from_files)
+# Get the max values for each document
+max_vals = inner_prod.max(axis=2).squeeze()
+sort_ind = np.flip(max_vals.argsort())  # In decreasing order
+print("In order of decreasing prevalence of the keyword")
+print(list_of_text_files[sort_ind])
 
 
