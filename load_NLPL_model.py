@@ -20,7 +20,7 @@ def load_model(model_file_path):
         # Allocate the memory in numpy
         words_rep_vec = np.zeros((dims[0], dims[1]), dtype=np.float32)
         # Use the data type object as this is suitable for variable length strings
-        words_name_type = np.zeros((dims[0], 2), dtype=np.object)
+        words_name_type = np.zeros((dims[0], 2), dtype=object)
         for idx, line in enumerate(file):
             line_list = line.replace('\n', '').split(' ')
             words_rep_vec[idx, :] = line_list[1:]
@@ -48,6 +48,13 @@ def load_text_file(text_file_path):
 
 
 def vectorize_text(list_of_text_files):
+    """
+        Vectorize the words in the text files
+    :param
+        list_of_text_files (list of strings): List of file names for the text files contained within the directory
+    :return:
+        vector_rep_array (numpy array of float 32): Array containing the expansion of words in the 300-dimensional basis
+    """
     # Initialize and empty list for the vector representation of
     vector_rep_files = []
     for text_file in list_of_text_files:
@@ -69,12 +76,33 @@ def vectorize_text(list_of_text_files):
     return vector_rep_array
 
 
+def vectorize_search(search_keywords):
+    """
+        Return the search keywords in numpy array form for multiplication
+    :param
+        search_keywords (list of strings): list of keywords to be searched in the documents
+    :return:
+        array_rep (numpy array of float32): array representation of the search keywords in 300-word basis
+    """
+    num_words = len(search_keywords)
+    array_rep = np.empty((num_words, 300), dtype=np.float32)
+    for i, word in enumerate(search_keywords):
+        idxs_array = np.where(words_name_type[:, 0] == word)
+        idxs = idxs_array[0]
+        if len(idxs) != 0:
+            # First occurrence is taken for now
+            array_rep[i, :] = words_rep_vec[idxs[0]]
+    return array_rep
+
+
 # Hyper-parameters for the code to work properly
 model_location = './0/model.txt'  # file containing the model parameters
 text_files_folder = './example_texts'  # folder containing the text files
+search_keywords = ['banana']
 
 words_rep_vec, words_name_type = load_model(model_location)
 list_of_text_files = os.listdir(text_files_folder)
 text_arrays_from_files = vectorize_text(list_of_text_files)
-pass
+search_array = vectorize_search(search_keywords)
+
 
